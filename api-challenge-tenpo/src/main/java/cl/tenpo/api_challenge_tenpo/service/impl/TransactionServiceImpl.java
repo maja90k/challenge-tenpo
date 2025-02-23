@@ -1,13 +1,13 @@
 package cl.tenpo.api_challenge_tenpo.service.impl;
 
 import cl.tenpo.api_challenge_tenpo.dto.TransactionDto;
+import cl.tenpo.api_challenge_tenpo.exception.CustomNotFoundException;
 import cl.tenpo.api_challenge_tenpo.mapper.TransactionMapper;
 import cl.tenpo.api_challenge_tenpo.model.Transaction;
 import cl.tenpo.api_challenge_tenpo.service.TransactionService;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,6 @@ public class TransactionServiceImpl implements TransactionService {
 
   @Override
   public List<TransactionDto> findAll(Map<String, String> params) {
-
     List<Transaction> transactions = transactionMapper.findAll(params);
     return transactions.stream()
         .map(this::toDto)
@@ -35,7 +34,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     Transaction entity = transactionMapper.findById(id);
     if (entity == null) {
-      throw new NoSuchElementException("No se encontró la transacción con ID: " + id);
+      throw new CustomNotFoundException("No se encontró la transacción con ID: " + id);
     }
 
     return toDto(entity);
@@ -72,8 +71,10 @@ public class TransactionServiceImpl implements TransactionService {
 
   @Override
   public TransactionDto edit(TransactionDto updatedTransaction, int id) {
-
     Transaction existingTransaction = transactionMapper.findById(id);
+    if (existingTransaction == null) {
+      throw new CustomNotFoundException("No se encontró la transacción con ID: " + id);
+    }
 
     existingTransaction.setName(updatedTransaction.getName());
     existingTransaction.setAmount(updatedTransaction.getAmount());
@@ -86,18 +87,20 @@ public class TransactionServiceImpl implements TransactionService {
 
   @Override
   public void delete(int id) {
+    Transaction existingTransaction = transactionMapper.findById(id);
+    if (existingTransaction == null) {
+      throw new CustomNotFoundException("No se encontró la transacción con ID: " + id);
+    }
     transactionMapper.delete(id);
   }
 
   private TransactionDto toDto(Transaction transaction) {
-
     TransactionDto dto = new TransactionDto();
     dto.setId(transaction.getId());
     dto.setAmount(transaction.getAmount());
     dto.setBankDraft(transaction.getBankDraft());
     dto.setName(transaction.getName());
     dto.setTransactionDate(transaction.getTransactionDate());
-
     return dto;
-    }
   }
+}

@@ -112,7 +112,7 @@ export class FormComponent implements OnInit {
 
   confirmDelete(transaction: any) {
     this.selectedTransaction = transaction;
-    $('#confirmDeleteModal').modal('show'); // Mostrar el modal de confirmación
+    $('#confirmDeleteModal').modal('show'); 
   }
 
   deleteTransaction() {
@@ -121,7 +121,7 @@ export class FormComponent implements OnInit {
             .then(() => {
                 this.transactions = this.transactions.filter((t: any) => t.id !== this.selectedTransaction.id);
                 this.selectedTransaction = null;
-                $('#confirmDeleteModal').modal('hide'); // Cerrar el modal de confirmación
+                $('#confirmDeleteModal').modal('hide');
             })
             .catch(error => {
                 console.error('Error al eliminar la transacción:', error);

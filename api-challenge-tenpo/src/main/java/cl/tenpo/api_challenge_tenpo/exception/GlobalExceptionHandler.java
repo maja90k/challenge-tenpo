@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(IllegalArgumentException.class)
-  public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
-    return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST); // Código 400
+  public ResponseEntity<ApiResponse<String>> handleIllegalArgumentException(IllegalArgumentException e) {
+    ApiResponse<String> response = new ApiResponse<>(e.getMessage(), null, HttpStatus.BAD_REQUEST.value());
+    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<String> handleGenericException(Exception e) {
-    return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR); // Código 500
+  public ResponseEntity<ApiResponse<String>> handleGenericException(Exception e) {
+    ApiResponse<String> response = new ApiResponse<>("Error interno del servidor", null, HttpStatus.INTERNAL_SERVER_ERROR.value());
+    return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }
