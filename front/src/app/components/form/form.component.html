@@ -1,0 +1,128 @@
+<div class="container-fluid m-0 p-0">
+    <div class="py-2 bg-success"><br></div>
+    <img src="../../../assets/logo-tenpo.png" style="height: 100px; width: 100px;">
+    <div class="container p-5">
+        <div class="row p-5 justify-content-center">
+            <div class="col-md-12">
+                <div class="mb">
+                    <h1>Mis transacciones</h1>
+                    <hr>
+                </div>
+                <form (ngSubmit)="onSubmit()" #transactionForm="ngForm" method="POST">
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Monto a transferir</label>
+                        <input type="text" [(ngModel)]="formTransaction.amount" name="amount" id="amount" placeholder="0" class="form-control" required>
+                        <div *ngIf="transactionForm.controls['amount']?.invalid && transactionForm.controls['amount']?.touched" class="text-danger">Este campo es obligatorio.</div>
+                        <div *ngIf="amountError" class="text-danger">El monto no puede ser negativo.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="comercio" class="form-label">Giro o Comercio</label>
+                        <input type="text" [(ngModel)]="formTransaction.bankDraft" name="comercio" id="comercio" placeholder="Comercio" class="form-control" required>
+                        <div *ngIf="transactionForm.controls['comercio']?.invalid && transactionForm.controls['comercio']?.touched" class="text-danger">Este campo es obligatorio.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Nombre destinatario</label>
+                        <input type="text" [(ngModel)]="formTransaction.name" name="name" id="modelo" placeholder="Pepe Tapia" class="form-control" required>
+                        <div *ngIf="transactionForm.controls['name']?.invalid && transactionForm.controls['name']?.touched" class="text-danger">Este campo es obligatorio.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="transactionDate" class="form-label">Fecha de Transacción</label>
+                        <input type="date" [(ngModel)]="formTransaction.transactionDate" name="transactionDate" id="transactionDate" class="form-control" [max]="maxDate" required>
+                        <div *ngIf="transactionForm.controls['transactionDate']?.invalid && transactionForm.controls['transactionDate']?.touched" class="text-danger">Este campo es obligatorio.</div>
+                    </div>
+
+                    <div class="mb-3 d-grid">
+                        <button type="submit" class="btn btn-outline-dark btn-block">Guardar transacción</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-12 ms-6">
+                <div class="mb">
+                    <h1>Transacciones Registradas</h1>
+                    <hr>
+                </div>
+                <table class="table">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre destinatario</th>
+                            <th>Monto de transferencia</th>
+                            <th>Comercio</th>
+                            <th>Fecha</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="transactions.length > 0">
+                        <tr *ngFor="let transaction of transactions">
+                            <td>{{ transaction.id }}</td>
+                            <td>{{ transaction.name }}</td>
+                            <td>{{ transaction.amount }}</td>
+                            <td>{{ transaction.bankDraft }}</td>
+                            <td>{{ transaction.transactionDate | date:'yyyy-MM-dd HH:mm:ss' }}</td>
+                            <td>
+                                <button class="btn btn-primary" (click)="editTransaction(transaction)" data-bs-toggle="modal" data-bs-target="#editTransactionModal">Editar</button>
+                                <button class="btn btn-danger" (click)="confirmDelete(transaction)">Eliminar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody *ngIf="transactions.length <= 0">
+                        <td colspan="6" class="text-center py-2">No existen transferencias realizadas.</td>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editTransactionModal" tabindex="-1" aria-labelledby="editTransactionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTransactionModalLabel">Editar Transacción</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form (ngSubmit)="onEditSubmit()" #editTransactionForm="ngForm" method="POST">
+                    <div class="mb-3">
+                        <label for="editAmount" class="form-label">Monto a transferir</label>
+                        <input type="text" [(ngModel)]="editTransactionData.amount" name="editAmount" id="editAmount" placeholder="0" class="form-control" required>
+                        <div *ngIf="amountError" class="text-danger">El monto no puede ser negativo.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editComercio" class="form-label">Giro o Comercio</label>
+                        <input type="text" [(ngModel)]="editTransactionData.bankDraft" name="editComercio" id="editComercio" placeholder="Comercio" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editName" class="form-label">Nombre destinatario</label>
+                        <input type="text" [(ngModel)]="editTransactionData.name" name="editName" id="editName" placeholder="Pepe Tapia" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editTransactionDate" class="form-label">Fecha de Transacción</label>
+                        <input type="date" [(ngModel)]="editTransactionData.transactionDate" name="editTransactionDate" id="editTransactionDate" class="form-control" [max]="maxDate" readonly>
+                    </div>
+                    <div class="mb-3 d-grid">
+                        <button type="submit" class="btn btn-outline-dark btn-block">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar la transacción de <strong>{{ selectedTransaction?.name }}</strong>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" (click)="deleteTransaction()">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
