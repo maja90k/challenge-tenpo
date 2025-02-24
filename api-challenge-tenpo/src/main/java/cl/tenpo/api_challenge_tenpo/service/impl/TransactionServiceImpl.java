@@ -75,7 +75,7 @@ public class TransactionServiceImpl implements TransactionService {
     Transaction existingTransaction = transactionMapper.findById(id);
 
     if (existingTransaction == null) {
-      throw new CustomNotFoundException("No se encuntra la disponible la transacción con ID: " + id);
+      throw new CustomNotFoundException("No se encuentra disponible la transacción con ID: " + id);
     }
 
     if (updatedTransaction.getName() == null || updatedTransaction.getName().isEmpty()) {
