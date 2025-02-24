@@ -13,6 +13,16 @@ Clona el repositorio: clone https://github.com/maja90k/challenge-tenpo.git
 
 #Pasos para Ejecutar el Backend (Spring Boot)
 Configuracion la base de datos POSTGRESQL:
+en caso de no poder ocupar la imagen de Docker proporcionada, correr el siguiente script>
+
+CREATE TABLE public."transaction" (
+	id int4 GENERATED ALWAYS AS IDENTITY( INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START 1 CACHE 1 NO CYCLE) NOT NULL,
+	amount int4 NULL,
+	bank_draft varchar NULL,
+	"name" varchar NULL,
+	"date" varchar NULL
+);
+
 
 Compila y ejecuta el proyecto: se recomienda lanzar un clean y seguido un install
 con esto las dependencias quedaran ok para darle a run.

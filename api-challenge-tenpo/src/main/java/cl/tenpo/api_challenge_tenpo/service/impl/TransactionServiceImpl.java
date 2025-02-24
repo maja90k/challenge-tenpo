@@ -20,7 +20,6 @@ public class TransactionServiceImpl implements TransactionService {
 
   @Override
   public List<TransactionDto> findAll(Map<String, String> params) {
-
     List<Transaction> transactions = transactionMapper.findAll(params);
 
     return transactions.stream()
@@ -30,12 +29,10 @@ public class TransactionServiceImpl implements TransactionService {
 
   @Override
   public TransactionDto findById(int id) {
-
     if (id < 0) {
       throw new IllegalArgumentException("El ID no puede ser negativo");
     }
     Transaction entity = transactionMapper.findById(id);
-
     if (entity == null) {
       throw new CustomNotFoundException("No se encontró la transacción con ID: " + id);
     }
@@ -45,7 +42,6 @@ public class TransactionServiceImpl implements TransactionService {
 
   @Override
   public TransactionDto save(TransactionDto transaction) {
-
     int transactionCount = transactionMapper.countTransactionsByUser(transaction.getName());
 
     if (transactionCount >= 100) {

@@ -15,7 +15,7 @@ services:
 
   backend:
     build:
-      context: ./path/to/your/springboot-app
+      context: ./api-challenge-tenpo/
       dockerfile: Dockerfile
     image: my-spring-boot-app:latest
     ports:
@@ -29,7 +29,7 @@ services:
 
   frontend:
     build:
-      context: ./path/to/your/angular-app
+      context: ./front/
       dockerfile: Dockerfile
     image: my-angular-app:latest
     ports:
