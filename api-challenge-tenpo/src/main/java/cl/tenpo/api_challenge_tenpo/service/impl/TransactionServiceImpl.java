@@ -20,7 +20,9 @@ public class TransactionServiceImpl implements TransactionService {
 
   @Override
   public List<TransactionDto> findAll(Map<String, String> params) {
+
     List<Transaction> transactions = transactionMapper.findAll(params);
+
     return transactions.stream()
         .map(this::toDto)
         .collect(Collectors.toList());
@@ -28,11 +30,12 @@ public class TransactionServiceImpl implements TransactionService {
 
   @Override
   public TransactionDto findById(int id) {
+
     if (id < 0) {
       throw new IllegalArgumentException("El ID no puede ser negativo");
     }
-
     Transaction entity = transactionMapper.findById(id);
+
     if (entity == null) {
       throw new CustomNotFoundException("No se encontró la transacción con ID: " + id);
     }
@@ -42,7 +45,9 @@ public class TransactionServiceImpl implements TransactionService {
 
   @Override
   public TransactionDto save(TransactionDto transaction) {
+
     int transactionCount = transactionMapper.countTransactionsByUser(transaction.getName());
+
     if (transactionCount >= 100) {
       throw new IllegalArgumentException("El cliente ha alcanzado el límite máximo de 100 transacciones");
     }
@@ -72,8 +77,16 @@ public class TransactionServiceImpl implements TransactionService {
   @Override
   public TransactionDto edit(TransactionDto updatedTransaction, int id) {
     Transaction existingTransaction = transactionMapper.findById(id);
+
     if (existingTransaction == null) {
-      throw new CustomNotFoundException("No se encontró la transacción con ID: " + id);
+      throw new CustomNotFoundException("No se encuntra la disponible la transacción con ID: " + id);
+    }
+
+    if (updatedTransaction.getName() == null || updatedTransaction.getName().isEmpty()) {
+      throw new IllegalArgumentException("El nombre no puede estar vacío.");
+    }
+    if (updatedTransaction.getAmount() <= 0) {
+      throw new IllegalArgumentException("El monto debe ser mayor que cero.");
     }
 
     existingTransaction.setName(updatedTransaction.getName());

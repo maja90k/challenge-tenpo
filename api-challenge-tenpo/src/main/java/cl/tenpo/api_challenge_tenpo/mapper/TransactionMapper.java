@@ -48,10 +48,6 @@ public interface TransactionMapper {
   public Integer delete(Integer id);
 
   @Update("UPDATE transaction SET " +
-      "name = #{name}, " +
-      "amount = #{amount}, " +
-      "bank_draft = #{bankDraft}, " +
-      "WHERE id = #{id}")
+      "name = #{name}, amount = #{amount}, bank_draft = #{bankDraft} WHERE id = #{id}")
   public Integer update(TransactionDto existingTransaction);
-
 }

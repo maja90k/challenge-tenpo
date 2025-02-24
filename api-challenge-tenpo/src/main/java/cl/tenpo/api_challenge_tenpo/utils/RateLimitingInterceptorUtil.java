@@ -20,21 +20,20 @@ public class RateLimitingInterceptorUtil implements HandlerInterceptor {
     String clientIp = request.getRemoteAddr();
     long currentTime = System.currentTimeMillis();
 
-    if (!lastRequestTimes.containsKey(clientIp) || currentTime - lastRequestTimes.get(clientIp) > ONE_MINUTE) {
+    if ("POST".equalsIgnoreCase(request.getMethod()) || "PUT".equalsIgnoreCase(request.getMethod())) {
+      if (!lastRequestTimes.containsKey(clientIp) || currentTime - lastRequestTimes.get(clientIp) > ONE_MINUTE) {
+        requestCounts.put(clientIp, 1L);
+        lastRequestTimes.put(clientIp, currentTime);
+      } else {
+        long requestCount = requestCounts.get(clientIp) + 1;
 
-      requestCounts.put(clientIp, 1L);
-      lastRequestTimes.put(clientIp, currentTime);
-
-    } else {
-      long requestCount = requestCounts.get(clientIp) + 1;
-
-      if (requestCount > MAX_REQUESTS_PER_MINUTE) {
-        response.setStatus(429);
-        return false;
+        if (requestCount > MAX_REQUESTS_PER_MINUTE) {
+          response.setStatus(429);
+          return false;
+        }
+        requestCounts.put(clientIp, requestCount);
       }
-      requestCounts.put(clientIp, requestCount);
     }
-
     return true;
   }
 }

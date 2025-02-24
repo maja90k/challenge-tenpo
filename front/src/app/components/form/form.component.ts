@@ -27,7 +27,6 @@ export class FormComponent implements OnInit {
     amount: "",
     bankDraft: "",
     name: "",
-    transactionDate: ""
   };
 
   constructor(private transactionService: TransactionService, private datePipe: DatePipe) {
@@ -98,7 +97,6 @@ export class FormComponent implements OnInit {
         this.amountError = true;
         return; 
     }
-
     try {
         await this.transactionService.updateTransaction(this.editTransactionData); 
         alert('Transacción actualizada con éxito!');

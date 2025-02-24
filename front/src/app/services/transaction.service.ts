@@ -25,7 +25,10 @@ export class TransactionService {
 
   async updateTransaction(transaction: any) {
     try {
-      const res = await axios.put(`${this.apiUrl}/transaction/${transaction.id}`, transaction);
+      const { amount, bankDraft, name } = transaction;
+      const payload = { amount, bankDraft, name };
+
+      const res = await axios.put(`${this.apiUrl}/transaction/${transaction.id}`, payload);
       alert('Transacción actualizada con éxito!');
       return res.data;
     } catch (error) {
